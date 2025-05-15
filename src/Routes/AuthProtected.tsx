@@ -1,16 +1,14 @@
-import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
-import { Navigate, Route } from "react-router-dom";
-import { RootState } from "../store";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AuthProtected = (props: any) => {
   const isAuth = localStorage.getItem("token");
-  if (!isAuth) {
-    // alert("Please Login First");
-    return (
-      <Navigate to={{ pathname: "/dashboard" }} state={{ from: props.location }} />
-    );
-  }
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!isAuth) {
+      navigate("/dashboard", { state: { from: props.location } });
+    }
+  }, [isAuth, navigate, props.location]);
   return <>{props.children}</>;
 };
 
