@@ -176,12 +176,12 @@ const Userlist = () => {
                                             </td>
                                         </tr>
                                     ))}
-                                    {/* {
+                                    {
                                         list?.length === 0 &&
                                         <tr>
                                             <td colSpan={5} className="text-center alert btn-primary text-white">No data found!</td>
                                         </tr>
-                                    } */}
+                                    }
                                 </tbody>
                             </table>
                         </div>
