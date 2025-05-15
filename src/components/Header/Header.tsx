@@ -27,7 +27,7 @@ const Header = (props: HeaderProps) => {
                         {/* Welcome, */}
                         <p className="mb-1 text-white col-12 text-truncate" style={{ fontSize: "14px" }}>
                             {/* Welcome,{" "}{userData.first_name + " " + userData.last_name} */}
-                            Welcome,{" "}{userData?.first_name}
+                            Welcome,{" "}{userData?.first_name ? userData?.first_name : "Admin"}
                         </p>
                     </Link>
                     <div className="dropdown ms-auto">

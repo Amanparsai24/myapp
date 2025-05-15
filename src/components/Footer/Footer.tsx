@@ -5,12 +5,14 @@ import toast from "react-hot-toast";
 
 const Footer = () => {
     // 'linear-gradient(310deg, #344767 0%, #344767 100%)'
-    const [themeGradient, setThemeGradient] = useState('');
+    const [themeGradient, setThemeGradient] = useState('linear-gradient(310deg, #344767 0%, #344767 100%)');
 
     useEffect(() => {
         // getGradient();'
         let userData = JSON.parse(localStorage.getItem("UserData") || "{}");
-        setThemeGradient(userData.theme_color);
+        if (!userData) {
+            setThemeGradient(userData.theme_color);
+        }
         document.documentElement.style.setProperty('--theme-color', themeGradient);
     }, [themeGradient]);
 
@@ -49,7 +51,7 @@ const Footer = () => {
                         <div className="col-lg-4 mb-lg-0 mb-4">
                             <div className="copyright text-center text-sm text-muted text-lg-start">
                                 © {new Date().getFullYear()} {""}
-                                <Link to={"/dashboard"} className="font-weight-bold">MY PRODUCT</Link>
+                                <Link to={"/dashboard"} className="font-weight-bold">MY App</Link>
                             </div>
                         </div>
                         <div className="col-lg-4 mb-lg-0 mb-4">

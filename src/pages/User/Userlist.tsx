@@ -10,14 +10,11 @@ import { limit } from "../../components/common/list";
 
 const Userlist = () => {
 
-    const [modelName, setModelName] = useState<any>({ name: "" });
-    const [data, setData] = useState<any>({ alert: false, id: 0 });
+    const [modelName, setModelName] = useState<any>({ name: "", id: 0 });
     const [list, setlist] = useState<any>([]);
     const [count, setCount] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
-    // const [loader, setLoader] = useState<any>(false)
-    const [sortBy, setSortBy] = useState("first_name");
-    const [orderBy, setOrderBy] = useState("asc");
+    const [filter, setFilter] = useState({ sortBy: "first_name", orderBy: "asc" });
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
@@ -45,7 +42,7 @@ const Userlist = () => {
                 if (res && res.message) {
                     toast.success(res.message);
                     getList(1, keyword);
-                    setData({ alert: false, id: 0 });
+                    setModelName("");
                 }
             })
             .catch((error: any) => {
@@ -55,33 +52,31 @@ const Userlist = () => {
     }
 
     const handleSort = (field: any) => {
-        if (sortBy === field) {
-            setOrderBy(orderBy === "asc" ? "desc" : "asc");
+        if (filter.sortBy === field) {
+            setFilter({ ...filter, orderBy: filter.orderBy === "asc" ? "desc" : "asc" });
         } else {
-            setSortBy(field);
-            setOrderBy("asc");
+            setFilter({ ...filter, sortBy: field });
+            setFilter({ ...filter, orderBy: "asc" });
         }
-        getList(1, keyword, orderBy, field);
+        getList(1, keyword);
     }
 
-    const getList = (page?: any, keyword?: any, order_by?: any, sort_by?: any) => {
+    const getList = (page?: any, keyword?: any) => {
         let obj: any = {};
         obj.offset = page - 1;
         obj.keyword = keyword;
         obj.limit = limit;
-        obj.order_by = order_by || orderBy;
-        obj.sort_by = sort_by || sortBy;
+        obj.order_by = filter.orderBy;
+        obj.sort_by = filter.sortBy;
         WebService.getAPI({
             action: "/user-list",
             body: obj
         })
             .then((res: any) => {
                 if (res && res.list) {
-
                     setlist(res.list);
                     // setLoader(true);
                     setCount(res.count);
-
                 }
             })
             .catch((error: any) => {
@@ -117,7 +112,7 @@ const Userlist = () => {
                                             style={{ cursor: 'pointer' }}
                                         >
                                             Name
-                                            {sortBy === 'first_name' && (orderBy === 'asc' ? <i className="fa fa-sort-up ms-1"></i> : <i className="fa fa-sort-down ms-1"></i>)}
+                                            {filter.sortBy === 'first_name' && (filter.orderBy === 'asc' ? <i className="fa fa-sort-up ms-1"></i> : <i className="fa fa-sort-down ms-1"></i>)}
                                         </th>
                                         <th className="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Number/Address</th>
                                         <th className="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
@@ -168,26 +163,14 @@ const Userlist = () => {
                                                         <i className="fa fa-ellipsis-v text-xs"></i>
                                                     </button>
                                                     <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                        <button className="dropdown-item" onClick={() => { setModelName({ name: "AddEditUser", id: value.id }) }}>
+                                                        <button className="dropdown-item" onClick={() => setModelName({ name: "AddEditUser", id: value.id })}>
                                                             <i className="fa fa-pencil text-dark fs-16 align-middle me-2"></i>
                                                             Edit
                                                         </button>
-                                                        {
-                                                            value.status === 0 ?
-                                                                <button className="dropdown-item" onClick={() => setData({ alert: true, id: value.id })}>
-                                                                    <i className="fa-solid fa-check text-dark fs-16 align-middle me-2"></i>
-                                                                    Active
-                                                                </button>
-                                                                :
-                                                                <button className="dropdown-item" onClick={() => setData({ alert: true, id: value.id })}>
-                                                                    <i className="fa-solid fa-circle-xmark text-dark fs-16 align-middle me-2"></i>
-                                                                    DeActive
-                                                                </button>
-                                                        }
-                                                        {/* <button className="dropdown-item" onClick={() => setData({ alert: true, id: value.id, status: "Delete" })}>
-                                                            <i className="fa-solid fa-trash text-dark fs-16 align-middle me-2"></i>
-                                                            Delete
-                                                        </button> */}
+                                                        <button className="dropdown-item" onClick={() => setModelName({ name: "Modal", id: value.id })}>
+                                                            <i className={value.status === 0 ? "fa-solid fa-check text-dark fs-16 align-middle me-2" : "fa-solid fa-circle-xmark text-dark fs-16 align-middle me-2"}></i>
+                                                            {value.status === 0 ? "Active" : "DeActive"}
+                                                        </button>
                                                     </ul>
                                                 </div>
                                             </td>
@@ -227,10 +210,10 @@ const Userlist = () => {
                 />
             }
 
-            <Modal size="md" isOpen={data.alert} centered>
+            <Modal size="md" isOpen={modelName.name === 'Modal'} centered>
                 <ModalHeader
                     className="mb-2"
-                    toggle={() => setData({ alert: false, id: 0 })}
+                    toggle={() => setModelName({ name: "", id: 0 })}
                 >
                     Are you sure you want to do this action?
                 </ModalHeader>
@@ -239,14 +222,14 @@ const Userlist = () => {
                         <button
                             type="button"
                             className="btn btn-light"
-                            onClick={() => setData({ alert: false, id: 0 })}>
+                            onClick={() => setModelName({ name: "", id: 0 })}>
                             Cancel
                         </button>
                         <button
                             type="button"
                             id="manage-user-modal-submit-btn"
                             className="btn btn-primary"
-                            onClick={() => changeStatus(data.id)}
+                            onClick={() => changeStatus(modelName.id)}
                         >
                             Ok
                         </button>

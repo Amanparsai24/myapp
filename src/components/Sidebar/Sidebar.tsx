@@ -38,7 +38,7 @@ const Sidebar = (props: SidebarProps) => {
                 <i className="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
                 <Link className="navbar-brand m-0" to="" target="">
                     <img src={logo} className="navbar-brand-img h-100" alt="main_logo" />
-                    <span className="ms-1 font-weight-bold f-18 text-gradient2">MY Project</span>
+                    <span className="ms-1 font-weight-bold f-18 text-gradient2">MY App</span>
                 </Link>
                 <i className="bi bi-x p-3 position-absolute end-0 top-1 d-xl-none" onClick={props.toggleSidebar}></i>
             </div>
